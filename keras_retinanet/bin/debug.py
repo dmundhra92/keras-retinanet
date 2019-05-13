@@ -159,6 +159,7 @@ def parse_args(args):
     parser.add_argument('--image-min-side', help='Rescale the image so the smallest side is min_side.', type=int, default=800)
     parser.add_argument('--image-max-side', help='Rescale the image if the largest side is larger than max_side.', type=int, default=1333)
     parser.add_argument('--config', help='Path to a configuration parameters .ini file.')
+    parser.add_argument('--destination-path', help='Destination Path to save images', dest='destination_path', default='/tmp')
 
     return parser.parse_args(args)
 
@@ -201,9 +202,10 @@ def run(generator, args, anchor_params):
                 # result is that annotations without anchors are red, with anchors are green
                 draw_boxes(image, annotations['bboxes'][max_indices[positive_indices], :], (0, 255, 0))
 
-        cv2.imshow('Image', image)
-        if cv2.waitKey() == ord('q'):
-            return False
+#        cv2.imshow('Image', image)
+#        if cv2.waitKey() == ord('q'):
+#            return False
+        cv2.imwrite(os.path.join(args.destination_path, "%d.jpg" % i), image)
     return True
 
 
@@ -229,7 +231,7 @@ def main(args=None):
         anchor_params = parse_anchor_parameters(args.config)
 
     # create the display window
-    cv2.namedWindow('Image', cv2.WINDOW_NORMAL)
+#    cv2.namedWindow('Image', cv2.WINDOW_NORMAL)
 
     if args.loop:
         while run(generator, args, anchor_params=anchor_params):
